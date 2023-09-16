@@ -1,40 +1,48 @@
 import { useSelector } from 'react-redux'
 import { AccordionTitle } from '../entities/accordionTitle'
-import { AccordionItem } from '../features/accordionItem'
+import { LinkBuildItem } from '../features/linkBuildItem'
 import { Button } from '../shared/button'
-import { RootState } from '../app/store'
+import { AppDispatch, RootState } from '../app/store'
+import { useDispatch } from 'react-redux'
+import { setTitle } from '../app/linkSlice'
+import { saveLinks } from '../app/linkThunks'
 
 export const LinkBuilder = () => {
-  const links = useSelector((state: RootState) => state.linkBuilder.links)
-
+  const links = useSelector(
+    (state: RootState) => state.linkBuilder.buildingLinks
+  )
+  const isSuccessSaved = useSelector(
+    (state: RootState) => state.linkBuilder.isSaved
+  )
+  const dispatch = useDispatch<AppDispatch>()
   const onSaveHandler = async () => {
-    const res = await fetch('http://localhost:3000/save', {
-      body: JSON.stringify(links),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    })
+    dispatch(saveLinks(links))
   }
 
   return (
     <div className='flex flex-col gap-1'>
-      {links.map(link => (
-        <AccordionItem
+      {links.map((link, index) => (
+        <LinkBuildItem
+          linkParentIndexes={[index]}
           link={link}
           key={link.id}
           root
           Title={
             <AccordionTitle
-              ids={[...link.parentLinkId, link.id]}
+              onSetTitle={(title: string) => {
+                dispatch(setTitle({ ids: [index], title }))
+              }}
               placeholder='Название категории'
             />
           }
         />
       ))}
-
-      <Button onClick={onSaveHandler}>save</Button>
+      <div className='flex gap-4'>
+        <Button className='w-40 border' onClick={onSaveHandler}>
+          save
+        </Button>
+        {isSuccessSaved && 'success'}
+      </div>
     </div>
   )
 }

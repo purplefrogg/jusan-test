@@ -1,26 +1,28 @@
-import { LinkType } from '../linksSlice'
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs'
+import { LinkType } from '../app/linkSlice'
 import { Accordion } from '../shared/accordion'
-import { cn } from '../shared/utils'
 
 export const LinkViewItem = (link: LinkType) => {
-  console.log(link.parentLinkId.length)
   return (
     <Accordion
       header={(collapsed, setCollapsed) => (
         <div className='h-6 gap-3 rounded flex border-b'>
-          <span className={cn(`flex-1 pl-${link.parentLinkId.length * 4}`)}>
+          <div
+            style={{ paddingLeft: link.parentLinkId.length * 20 }}
+            className={'flex-1'}>
             <input type='checkbox' />
 
             {link.title}
-          </span>
+          </div>
           <button onClick={() => setCollapsed(p => !p)}>
-            {collapsed ? 'uncoll' : 'coll'}
+            {collapsed ? <BsChevronDown /> : <BsChevronUp />}
           </button>
         </div>
       )}>
-      {link.children.map(link => (
-        <LinkViewItem key={link.id} {...link} />
-      ))}
+      {collapsed =>
+        !collapsed &&
+        link.children.map(link => <LinkViewItem key={link.id} {...link} />)
+      }
     </Accordion>
   )
 }

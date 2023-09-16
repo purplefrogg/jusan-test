@@ -25,7 +25,6 @@ app.post('/save', (req, res) => {
       console.error('Error writing JSON file:', err)
       res.status(500).send('Error writing JSON file')
     } else {
-      console.log('JSON data saved to file successfully')
       res.status(200).send('JSON data saved to file successfully')
     }
   })

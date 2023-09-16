@@ -7,9 +7,7 @@ export const Button = (
     HTMLButtonElement
   >
 ) => (
-  <button
-    {...props}
-    className={cn('border-2 border-black w-16 rounded', props.className)}>
+  <button {...props} className={cn('rounded', props.className)}>
     {props.children}
   </button>
 )

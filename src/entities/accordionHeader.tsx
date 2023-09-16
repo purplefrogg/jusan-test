@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
-import { createLink, hideToggle, deleteLink, LinkType } from '../linksSlice'
+import { createLink, hideToggle, deleteLink, LinkType } from '../app/linkSlice'
 import { Button } from '../shared/button'
 import { cn } from '../shared/utils'
 import { AccordionLinkText } from './accordionLinkText'

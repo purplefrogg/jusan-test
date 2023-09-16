@@ -1,21 +1,18 @@
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { setTitle } from '../linksSlice'
 import { Input } from '../shared/input'
 
 export const AccordionTitle = ({
-  ids,
+  onSetTitle,
   placeholder,
 }: {
-  ids: number[]
+  onSetTitle: (title: string) => void
   placeholder?: string
 }) => {
   const [text, setText] = useState('')
-  const dispatch = useDispatch()
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      text && dispatch(setTitle({ ids, title: text }))
+      text && onSetTitle(text)
     }, 400)
     return () => {
       clearTimeout(timer)

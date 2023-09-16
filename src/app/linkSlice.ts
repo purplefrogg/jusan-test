@@ -1,7 +1,8 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { id } from './shared/utils'
-const baseUrl = 'http://localhost:3000'
+import { id } from '../shared/utils'
+import { fetchLinks, saveLinks } from './linkThunks'
+
 export type LinkType = {
   id: number
   title: string
@@ -12,28 +13,19 @@ export type LinkType = {
 }
 
 export interface CounterState {
-  links: LinkType[]
-  startDrag: LinkType | null
-  startDragIndex: number | null
+  buildingLinks: LinkType[]
+  startDragLink?: LinkType
+  startDragIndexes?: number[]
+  overDragLinkId?: number
+  overDragParentIndexes?: number[]
   fetchedLinks: LinkType[]
-  loading: 'idle' | 'pending' | 'succeeded' | 'failed'
+  loading?: 'pending' | 'succeeded' | 'failed'
+  isSaved?: boolean
 }
 
-export const fetchLinks = createAsyncThunk(
-  'users/fetchByIdStatus',
-  async () => {
-    const response = await fetch(baseUrl)
-
-    return await response.json()
-  }
-)
-
 const initialState: CounterState = {
-  startDrag: null,
-  loading: 'idle',
   fetchedLinks: [],
-  startDragIndex: null,
-  links: [
+  buildingLinks: [
     {
       id: id(),
       hidden: false,
@@ -53,60 +45,62 @@ export const linkBuilderSlice = createSlice({
   reducers: {
     setStartDrag: (
       state,
-      action: PayloadAction<{ link: LinkType; index: number }>
+      action: PayloadAction<{ link: LinkType; index: number[] }>
     ) => {
-      state.startDrag = action.payload.link
-      state.startDragIndex = action.payload.index
+      state.startDragLink = action.payload.link
+      state.startDragIndexes = action.payload.index
     },
-    setEndDrag: (
+    setOverDrag: (
       state,
-      action: PayloadAction<{ ids: number[]; index: number }>
+      action: PayloadAction<
+        { parentIds: number[] | undefined; id: number } | undefined
+      >
     ) => {
+      state.overDragParentIndexes = action.payload?.parentIds
+      state.overDragLinkId = action.payload?.id
+    },
+    setEndDrag: state => {
       let parentLink: LinkType | undefined = {
-        children: state.links,
+        children: state.buildingLinks,
       } as LinkType
-      action.payload.ids.forEach(id => {
-        parentLink = parentLink?.children.find(link => link.id === id)
+
+      console.log(state.startDragIndexes?.map(id => id))
+      const startDragLinkIndex = state.startDragIndexes?.pop()
+      state.startDragIndexes?.forEach(id => {
+        parentLink = parentLink?.children[id]
       })
 
-      console.log('action payload index', action.payload.index)
-      console.log('state.startDragIndex', state.startDragIndex)
-      console.log('parentLink', parentLink)
-      if (parentLink && state.startDragIndex !== null) {
-        const temp = parentLink.children[action.payload.index]
+      if (!parentLink || startDragLinkIndex === undefined) return
 
-        parentLink.children[action.payload.index] =
-          parentLink.children[state.startDragIndex]
-        parentLink.children[state.startDragIndex] = temp
-      }
+      const temp = parentLink.children[state.overDragParentIndexes?.at(-1)!]
+
+      parentLink.children[state.overDragParentIndexes?.at(-1)!] =
+        parentLink.children[startDragLinkIndex]
+      parentLink.children[startDragLinkIndex] = temp
     },
 
     deleteLink: (state, action: PayloadAction<number[]>) => {
-      console.log(action.payload)
-
       let parentLink: LinkType | undefined = {
-        children: state.links,
+        children: state.buildingLinks,
       } as LinkType
       const lastID = action.payload.pop()
       for (const id of action.payload) {
-        parentLink = parentLink?.children.find(link => link.id === id)
+        parentLink = parentLink?.children[id]
       }
 
-      if (parentLink?.children)
-        parentLink.children = parentLink?.children.filter(
-          link => link.id !== lastID
-        )
+      if (parentLink?.children && lastID !== undefined)
+        parentLink.children.splice(lastID, 1)
     },
     setLink: (
       state,
       action: PayloadAction<{ ids: number[]; text: string }>
     ) => {
       let parentLink: LinkType | undefined = {
-        children: state.links,
+        children: state.buildingLinks,
       } as LinkType
 
       action.payload.ids.forEach(id => {
-        parentLink = parentLink?.children.find(link => link.id === id)
+        parentLink = parentLink?.children[id]
       })
 
       if (parentLink) parentLink.link = action.payload.text
@@ -116,22 +110,23 @@ export const linkBuilderSlice = createSlice({
       action: PayloadAction<{ ids: number[]; title: string }>
     ) => {
       let parentLink: LinkType | undefined = {
-        children: state.links,
+        children: state.buildingLinks,
       } as LinkType
       action.payload.ids.forEach(id => {
-        parentLink = parentLink?.children.find(link => link.id === id)
+        parentLink = parentLink?.children[id]
       })
 
       if (parentLink) parentLink.title = action.payload.title
     },
     createLink: (state, action: PayloadAction<number[]>) => {
+      let parentLink: LinkType | undefined = {
+        children: state.buildingLinks,
+      } as LinkType
       console.log(action.payload)
 
-      let parentLink: LinkType | undefined = {
-        children: state.links,
-      } as LinkType
       action.payload.forEach(id => {
-        parentLink = parentLink?.children.find(link => link.id === id)
+        parentLink = parentLink?.children[id]
+        console.log(parentLink?.id)
       })
 
       if (parentLink)
@@ -146,12 +141,11 @@ export const linkBuilderSlice = createSlice({
     },
     hideToggle: (state, action: PayloadAction<number[]>) => {
       let parentLink: LinkType | undefined = {
-        children: state.links,
+        children: state.buildingLinks,
       } as LinkType
-      console.log(action.payload)
 
       action.payload.forEach(id => {
-        parentLink = parentLink?.children.find(link => link.id === id)
+        parentLink = parentLink?.children[id]
       })
 
       if (parentLink) setHiddenRecursive(parentLink, !parentLink?.hidden)
@@ -160,6 +154,18 @@ export const linkBuilderSlice = createSlice({
   extraReducers(builder) {
     builder.addCase(fetchLinks.fulfilled, (state, action) => {
       state.fetchedLinks = action.payload
+      state.loading = 'succeeded'
+    })
+
+    builder.addCase(fetchLinks.pending, (state, action) => {
+      state.loading = 'pending'
+    })
+
+    builder.addCase(fetchLinks.rejected, (state, action) => {
+      state.loading = 'failed'
+    })
+    builder.addCase(saveLinks.fulfilled, (state, _action) => {
+      state.isSaved = true
     })
   },
 })
@@ -170,6 +176,7 @@ export const {
   hideToggle,
   deleteLink,
   setTitle,
+  setOverDrag,
   setLink,
   setEndDrag,
   setStartDrag,

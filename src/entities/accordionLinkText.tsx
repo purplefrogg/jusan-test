@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { setLink } from '../linksSlice'
 import { Input } from '../shared/input'
 
-export const AccordionLinkText = ({ ids }: { ids: number[] }) => {
+export const AccordionLinkText = ({
+  onSetText,
+}: {
+  onSetText: (title: string) => void
+}) => {
   const [text, setText] = useState('')
-  const dispatch = useDispatch()
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      text && dispatch(setLink({ ids, text: text }))
+      text && onSetText(text)
     }, 400)
     return () => {
       clearTimeout(timer)

@@ -8,8 +8,10 @@ import { LinkViewer } from './widgets/linkViewer'
 const App = () => {
   return (
     <Provider store={store}>
-      <LinkBuilder />
-      <LinkViewer />
+      <div className='flex flex-col gap-8 text-gray-700'>
+        <LinkBuilder />
+        <LinkViewer />
+      </div>
     </Provider>
   )
 }
