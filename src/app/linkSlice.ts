@@ -14,10 +14,10 @@ export type LinkType = {
 
 export interface CounterState {
   buildingLinks: LinkType[]
-  startDragLink?: LinkType
+  startDragLink?: LinkType | null
   startDragIndexes?: number[]
-  overDragLinkId?: number
-  overDragParentIndexes?: number[]
+  overDragLinkId?: number | null
+  overDragParentIndexes?: number[] | null
   fetchedLinks: LinkType[]
   loading?: 'pending' | 'succeeded' | 'failed'
   isSaved?: boolean
@@ -52,12 +52,10 @@ export const linkBuilderSlice = createSlice({
     },
     setOverDrag: (
       state,
-      action: PayloadAction<
-        { parentIndexes: number[] | undefined; id: number } | undefined
-      >
+      action: PayloadAction<{ parentIndexes: number[] | undefined; id: number }>
     ) => {
-      state.overDragParentIndexes = action.payload?.parentIndexes
-      state.overDragLinkId = action.payload?.id
+      state.overDragParentIndexes = action.payload.parentIndexes
+      state.overDragLinkId = action.payload.id
     },
     setEndDrag: state => {
       let parentLink: LinkType | undefined = {
@@ -68,12 +66,22 @@ export const linkBuilderSlice = createSlice({
       state.startDragIndexes?.forEach(id => {
         parentLink = parentLink?.children[id]
       })
+      const dragOverItemIndex = state.overDragParentIndexes?.at(-1)
+      state.overDragParentIndexes = null
+      state.overDragLinkId = null
+      if (
+        !parentLink ||
+        startDragLinkIndex === undefined ||
+        dragOverItemIndex === undefined
+      )
+        return
 
-      if (!parentLink || startDragLinkIndex === undefined) return
+      state.startDragLink = null
+      state.startDragIndexes = undefined
 
-      const temp = parentLink.children[state.overDragParentIndexes?.at(-1)!]
+      const temp = parentLink.children[dragOverItemIndex]
 
-      parentLink.children[state.overDragParentIndexes?.at(-1)!] =
+      parentLink.children[dragOverItemIndex] =
         parentLink.children[startDragLinkIndex]
       parentLink.children[startDragLinkIndex] = temp
     },

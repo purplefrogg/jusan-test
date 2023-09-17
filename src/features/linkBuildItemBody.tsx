@@ -56,19 +56,16 @@ export const LinkBuildItemBody = ({
     <div
       onDragEnter={onDragEnterHandler}
       onDragStart={onDragStartHandler}
-      onDragEnd={() => {
-        dispatch(setOverDrag())
-      }}
       onDragOver={onDragOverHandler}
       onDrop={onDropHandler}
       style={{ paddingLeft: link.parentLinkId.length * 10 }}
       className={cn(
         'flex w-full gap-2',
-
+        link.id === startLink?.id && 'bg-green-400',
         link.id === overDragLinkId && 'bg-red-400'
       )}>
       <span className='text-right w-10'>
-        {parentIndexes.at(-1)! + 1} ({link.id})
+        {link.id} ({parentIndexes.at(-1)! + 1})
       </span>
       {inputs}
       {controllers}
