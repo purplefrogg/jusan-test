@@ -14,7 +14,7 @@ export const BuildItemTitle = ({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (text && text !== value) onSetTitle(text)
+      onSetTitle(text)
     }, 400)
     return () => {
       clearTimeout(timer)

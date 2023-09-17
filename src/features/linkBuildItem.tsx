@@ -21,7 +21,7 @@ import {
   BsGripVertical,
   BsPlusLg,
 } from 'react-icons/bs'
-import { LinkBuildItemBody } from './linkBuildItemBody'
+import { LinkBuildItemHeader } from './linkBuildItemHeader'
 
 export const LinkBuildItem = ({
   link,
@@ -43,9 +43,12 @@ export const LinkBuildItem = ({
     <>
       <Accordion
         header={(collapsed, setCollapsed) => (
-          <LinkBuildItemBody
+          <LinkBuildItemHeader
             inputs={
-              <div className={`grid flex-1 grid-cols-${root ? 1 : 2} gap-4`}>
+              <div
+                className={`grid flex-1 ${
+                  root ? 'grid-cols-1' : 'grid-cols-2'
+                } gap-4`}>
                 {Title}
                 {LinkText}
               </div>
@@ -91,7 +94,7 @@ export const LinkBuildItem = ({
                 LinkText={
                   <BuildItemLinkText
                     onSetText={text =>
-                      dispatch(setLink({ indexes: indexes, text }))
+                      text && dispatch(setLink({ indexes: indexes, text }))
                     }
                   />
                 }
@@ -99,6 +102,8 @@ export const LinkBuildItem = ({
                   <BuildItemTitle
                     value={link.title}
                     onSetTitle={title =>
+                      title &&
+                      link.title !== title &&
                       dispatch(
                         setTitle({
                           indexes: indexes,

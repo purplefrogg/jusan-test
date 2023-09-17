@@ -9,7 +9,7 @@ import { DragEvent, ReactNode } from 'react'
 import { cn } from '../shared/utils'
 import { RootState } from '../app/store'
 
-export const LinkBuildItemBody = ({
+export const LinkBuildItemHeader = ({
   link,
   controllers,
   inputs,
@@ -32,7 +32,7 @@ export const LinkBuildItemBody = ({
   const onDragStartHandler = (e: DragEvent<HTMLDivElement>) => {
     e.stopPropagation()
 
-    dispatch(setStartDrag({ link, parentIndexes: parentIndexes }))
+    dispatch(setStartDrag({ link, parentIndexes }))
   }
   const onDragEnterHandler = (e: DragEvent<HTMLDivElement>) => {
     e.stopPropagation()
@@ -40,7 +40,7 @@ export const LinkBuildItemBody = ({
     if (link.parentLinkId.at(-1) !== startLink?.parentLinkId.at(-1)) return
     if (link.id === overDragLinkId) return
 
-    dispatch(setOverDrag({ parentIndexes: parentIndexes, id: link.id }))
+    dispatch(setOverDrag({ parentIndexes, id: link.id }))
   }
 
   const onDragOverHandler = (e: DragEvent<HTMLDivElement>) => {

@@ -10,7 +10,7 @@ export const BuildItemLinkText = ({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      text && onSetText(text)
+      onSetText(text)
     }, 400)
     return () => {
       clearTimeout(timer)
