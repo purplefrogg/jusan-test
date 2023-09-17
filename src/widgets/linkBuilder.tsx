@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { AccordionTitle } from '../entities/accordionTitle'
+import { BuildItemTitle } from '../entities/buildItemTitle'
 import { LinkBuildItem } from '../features/linkBuildItem'
 import { Button } from '../shared/button'
 import { AppDispatch, RootState } from '../app/store'
@@ -23,14 +23,14 @@ export const LinkBuilder = () => {
     <div className='flex flex-col gap-1'>
       {links.map((link, index) => (
         <LinkBuildItem
-          linkParentIndexes={[index]}
+          parentIndexes={[index]}
           link={link}
           key={link.id}
           root
           Title={
-            <AccordionTitle
+            <BuildItemTitle
               onSetTitle={(title: string) => {
-                dispatch(setTitle({ ids: [index], title }))
+                dispatch(setTitle({ indexes: [index], title }))
               }}
               placeholder='Название категории'
             />

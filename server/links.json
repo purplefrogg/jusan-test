@@ -3,11 +3,11 @@
     "id": 1,
     "hidden": false,
     "link": "",
-    "title": "",
+    "title": "ffddfdffdfd",
     "children": [
       {
         "id": 2,
-        "title": "",
+        "title": "1 уровень",
         "hidden": false,
         "link": "",
         "children": [],
@@ -17,144 +17,49 @@
       },
       {
         "id": 3,
-        "title": "",
-        "hidden": false,
+        "title": "1 уровень",
+        "hidden": true,
         "link": "",
         "children": [
           {
+            "id": 6,
+            "title": "2 уровень",
+            "hidden": true,
+            "link": "",
+            "children": [],
+            "parentLinkId": [
+              1,
+              3
+            ]
+          },
+          {
+            "id": 7,
+            "title": "2 уровень",
+            "hidden": true,
+            "link": "",
+            "children": [],
+            "parentLinkId": [
+              1,
+              3
+            ]
+          },
+          {
+            "id": 8,
+            "title": "2 уровень",
+            "hidden": true,
+            "link": "",
+            "children": [],
+            "parentLinkId": [
+              1,
+              3
+            ]
+          },
+          {
             "id": 9,
-            "title": "",
-            "hidden": false,
+            "title": "2 уровень",
+            "hidden": true,
             "link": "",
             "children": [],
-            "parentLinkId": [
-              1,
-              3
-            ]
-          },
-          {
-            "id": 10,
-            "title": "",
-            "hidden": false,
-            "link": "",
-            "children": [],
-            "parentLinkId": [
-              1,
-              3
-            ]
-          },
-          {
-            "id": 11,
-            "title": "",
-            "hidden": false,
-            "link": "",
-            "children": [],
-            "parentLinkId": [
-              1,
-              3
-            ]
-          },
-          {
-            "id": 12,
-            "title": "",
-            "hidden": false,
-            "link": "",
-            "children": [],
-            "parentLinkId": [
-              1,
-              3
-            ]
-          },
-          {
-            "id": 13,
-            "title": "",
-            "hidden": false,
-            "link": "",
-            "children": [],
-            "parentLinkId": [
-              1,
-              3
-            ]
-          },
-          {
-            "id": 14,
-            "title": "",
-            "hidden": false,
-            "link": "",
-            "children": [
-              {
-                "id": 16,
-                "title": "",
-                "hidden": false,
-                "link": "",
-                "children": [],
-                "parentLinkId": [
-                  1,
-                  3,
-                  14
-                ]
-              },
-              {
-                "id": 17,
-                "title": "",
-                "hidden": false,
-                "link": "",
-                "children": [],
-                "parentLinkId": [
-                  1,
-                  3,
-                  14
-                ]
-              },
-              {
-                "id": 18,
-                "title": "",
-                "hidden": false,
-                "link": "",
-                "children": [],
-                "parentLinkId": [
-                  1,
-                  3,
-                  14
-                ]
-              },
-              {
-                "id": 19,
-                "title": "",
-                "hidden": false,
-                "link": "",
-                "children": [],
-                "parentLinkId": [
-                  1,
-                  3,
-                  14
-                ]
-              },
-              {
-                "id": 20,
-                "title": "",
-                "hidden": false,
-                "link": "",
-                "children": [],
-                "parentLinkId": [
-                  1,
-                  3,
-                  14
-                ]
-              },
-              {
-                "id": 21,
-                "title": "",
-                "hidden": false,
-                "link": "",
-                "children": [],
-                "parentLinkId": [
-                  1,
-                  3,
-                  14
-                ]
-              }
-            ],
             "parentLinkId": [
               1,
               3
@@ -167,59 +72,17 @@
       },
       {
         "id": 4,
-        "title": "",
+        "title": "1 уровень",
         "hidden": false,
         "link": "",
-        "children": [
-          {
-            "id": 15,
-            "title": "",
-            "hidden": false,
-            "link": "",
-            "children": [],
-            "parentLinkId": [
-              1,
-              4
-            ]
-          }
-        ],
+        "children": [],
         "parentLinkId": [
           1
         ]
       },
       {
         "id": 5,
-        "title": "",
-        "hidden": false,
-        "link": "",
-        "children": [],
-        "parentLinkId": [
-          1
-        ]
-      },
-      {
-        "id": 8,
-        "title": "",
-        "hidden": false,
-        "link": "",
-        "children": [],
-        "parentLinkId": [
-          1
-        ]
-      },
-      {
-        "id": 7,
-        "title": "",
-        "hidden": false,
-        "link": "",
-        "children": [],
-        "parentLinkId": [
-          1
-        ]
-      },
-      {
-        "id": 6,
-        "title": "",
+        "title": "1 уровень",
         "hidden": false,
         "link": "",
         "children": [],

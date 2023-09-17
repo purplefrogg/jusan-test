@@ -10,9 +10,8 @@ export const LinkViewItem = (link: LinkType) => {
           <div
             style={{ paddingLeft: link.parentLinkId.length * 20 }}
             className={'flex-1'}>
-            <input type='checkbox' />
-
-            {link.title}
+            <input type='checkbox' defaultChecked={!link.hidden} />
+            {link.title} {link.link}
           </div>
           <button onClick={() => setCollapsed(p => !p)}>
             {collapsed ? <BsChevronDown /> : <BsChevronUp />}

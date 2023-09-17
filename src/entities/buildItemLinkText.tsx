@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Input } from '../shared/input'
 
-export const AccordionTitle = ({
-  onSetTitle,
-  placeholder,
+export const BuildItemLinkText = ({
+  onSetText,
 }: {
-  onSetTitle: (title: string) => void
-  placeholder?: string
+  onSetText: (title: string) => void
 }) => {
   const [text, setText] = useState('')
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      text && onSetTitle(text)
+      text && onSetText(text)
     }, 400)
     return () => {
       clearTimeout(timer)
@@ -23,7 +21,7 @@ export const AccordionTitle = ({
       type='text'
       value={text}
       onChange={e => setText(e.currentTarget.value)}
-      placeholder={placeholder ?? 'Название'}
+      placeholder='Ссылка'
     />
   )
 }

@@ -45,18 +45,18 @@ export const linkBuilderSlice = createSlice({
   reducers: {
     setStartDrag: (
       state,
-      action: PayloadAction<{ link: LinkType; index: number[] }>
+      action: PayloadAction<{ link: LinkType; parentIndexes: number[] }>
     ) => {
       state.startDragLink = action.payload.link
-      state.startDragIndexes = action.payload.index
+      state.startDragIndexes = action.payload.parentIndexes
     },
     setOverDrag: (
       state,
       action: PayloadAction<
-        { parentIds: number[] | undefined; id: number } | undefined
+        { parentIndexes: number[] | undefined; id: number } | undefined
       >
     ) => {
-      state.overDragParentIndexes = action.payload?.parentIds
+      state.overDragParentIndexes = action.payload?.parentIndexes
       state.overDragLinkId = action.payload?.id
     },
     setEndDrag: state => {
@@ -64,7 +64,6 @@ export const linkBuilderSlice = createSlice({
         children: state.buildingLinks,
       } as LinkType
 
-      console.log(state.startDragIndexes?.map(id => id))
       const startDragLinkIndex = state.startDragIndexes?.pop()
       state.startDragIndexes?.forEach(id => {
         parentLink = parentLink?.children[id]
@@ -93,32 +92,55 @@ export const linkBuilderSlice = createSlice({
     },
     setLink: (
       state,
-      action: PayloadAction<{ ids: number[]; text: string }>
+      action: PayloadAction<{ indexes: number[]; text: string }>
     ) => {
       let parentLink: LinkType | undefined = {
         children: state.buildingLinks,
       } as LinkType
 
-      action.payload.ids.forEach(id => {
+      action.payload.indexes.forEach(id => {
         parentLink = parentLink?.children[id]
       })
 
-      if (parentLink) parentLink.link = action.payload.text
+      if (!parentLink) return
+      parentLink.link = action.payload.text
     },
     setTitle: (
       state,
-      action: PayloadAction<{ ids: number[]; title: string }>
+      action: PayloadAction<{ indexes: number[]; title: string }>
     ) => {
       let parentLink: LinkType | undefined = {
         children: state.buildingLinks,
       } as LinkType
-      action.payload.ids.forEach(id => {
+      action.payload.indexes.forEach(id => {
         parentLink = parentLink?.children[id]
       })
 
-      if (parentLink) parentLink.title = action.payload.title
+      if (!parentLink) return
+
+      parentLink.title = action.payload.title
     },
     createLink: (state, action: PayloadAction<number[]>) => {
+      let parentLink: LinkType | undefined = {
+        children: state.buildingLinks,
+      } as LinkType
+
+      action.payload.forEach(id => {
+        parentLink = parentLink?.children[id]
+      })
+
+      if (!parentLink) return
+
+      parentLink.children.push({
+        id: id(),
+        title: `${parentLink.parentLinkId.length + 1} уровень`,
+        hidden: false,
+        link: '',
+        children: [],
+        parentLinkId: [...parentLink.parentLinkId, parentLink.id],
+      })
+    },
+    hideToggle: (state, action: PayloadAction<number[]>) => {
       let parentLink: LinkType | undefined = {
         children: state.buildingLinks,
       } as LinkType
@@ -126,29 +148,11 @@ export const linkBuilderSlice = createSlice({
 
       action.payload.forEach(id => {
         parentLink = parentLink?.children[id]
-        console.log(parentLink?.id)
       })
 
-      if (parentLink)
-        parentLink.children.push({
-          id: id(),
-          title: '',
-          hidden: false,
-          link: '',
-          children: [],
-          parentLinkId: [...parentLink.parentLinkId, parentLink.id],
-        })
-    },
-    hideToggle: (state, action: PayloadAction<number[]>) => {
-      let parentLink: LinkType | undefined = {
-        children: state.buildingLinks,
-      } as LinkType
+      if (!parentLink) return
 
-      action.payload.forEach(id => {
-        parentLink = parentLink?.children[id]
-      })
-
-      if (parentLink) setHiddenRecursive(parentLink, !parentLink?.hidden)
+      setHiddenRecursive(parentLink, !parentLink?.hidden)
     },
   },
   extraReducers(builder) {
